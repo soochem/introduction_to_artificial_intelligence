@@ -4,6 +4,6 @@
 
 강의자 : 김재광 교수님
 
-언 어 : -
+언 어 : R
 
 based on Kaggle projects
