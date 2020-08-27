@@ -1,6 +1,5 @@
-# ÀÎ°øÁö´É°³·Ğ
-# 2Á¶
-# ¼­¼ö¹Î ÃÖÀç¿µ ÀÓ¿ëÈñ
+# ì¸ê³µì§€ëŠ¥ê°œë¡ 
+# 2ì¡°
 
 library(plyr)
 library(ggplot2)
@@ -21,9 +20,9 @@ setwd('/data')
 train <- read.csv('train.csv', stringsAsFactors = FALSE)
 test <- read.csv('test.csv', stringsAsFactors = FALSE)
 
-## N/A °ª ÀÏ°ı Ã³¸® train¿¡¸¸ salepriceÁ¸Àç 
+## N/A ê°’ ì¼ê´„ ì²˜ë¦¬ trainì—ë§Œ salepriceì¡´ì¬ 
 
-## µ¥ÀÌÅÍ ÇÕ»ê 
+## ë°ì´í„° í•©ì‚° 
 sum(is.na(train$Id))
 sum(is.na(train$SalePrice))
 sum(is.na(test$Id))
@@ -31,95 +30,95 @@ sum(is.na(test$Id))
 combined.data<- rbind(within(train, rm('Id','SalePrice')), within(test, rm('Id')))
 dim(combined.data)
 
-##N/A°ª È®ÀÎ    ##n/a°¡ ÀÖ´Â ¿­Àº 34°³ÀÌ´Ù! 
+##N/Aê°’ í™•ì¸    ##n/aê°€ ìˆëŠ” ì—´ì€ 34ê°œì´ë‹¤! 
 n.a_column<- which(colSums(is.na(combined.data)) > 0)
 length(n.a_column)
 sort(colSums(sapply(combined.data[n.a_column], is.na)), decreasing = TRUE)
 
 
-#0 MSZoning Ç×¸ñ °áÃøÄ¡ Ã³¸® 
+#0 MSZoning í•­ëª© ê²°ì¸¡ì¹˜ ì²˜ë¦¬ 
 
-combined.data[is.na(combined.data$MSZoning),c('MSZoning','MSSubClass')]##1916,2217,2251,2905 Çà °áÃøÄ¡
+combined.data[is.na(combined.data$MSZoning),c('MSZoning','MSSubClass')]##1916,2217,2251,2905 í–‰ ê²°ì¸¡ì¹˜
 
-table(combined.data$MSZoning, combined.data$MSSubClass) ##20ÀÇ °æ¿ì RLÀÌ ¾ĞµµÀûÀ¸·Î ¸¹À½, 30,70Àº RM/ÃÖºó°ª´ëÃ¼  
+table(combined.data$MSZoning, combined.data$MSSubClass) ##20ì˜ ê²½ìš° RLì´ ì••ë„ì ìœ¼ë¡œ ë§ìŒ, 30,70ì€ RM/ìµœë¹ˆê°’ëŒ€ì²´  
 
 combined.data$MSZoning[c(2217, 2905)] = 'RL'
 combined.data$MSZoning[c(1916, 2251)] = 'RM'
 
-##È®ÀÎ - MSZoning °ü·Ã Ç×¸ñ n/a°ª 0
+##í™•ì¸ - MSZoning ê´€ë ¨ í•­ëª© n/aê°’ 0
 sum(is.na(combined.data$MSZoning))
 
 
-##1 PoolQC(pool quality) °áÃøÄ¡ È®ÀÎ 
+##1 PoolQC(pool quality) ê²°ì¸¡ì¹˜ í™•ì¸ 
 
 combined.data[is.na(combined.data$PoolQC),c('PoolQC','PoolArea')]
 
-sum(is.na(combined.data$PoolQC))  ##has 2909 N.A(ÃÑµ¥ÀÌÅÍ´Â 2919°³, ±×Áß 2909°³°¡ °áÃøÄ¡)
+sum(is.na(combined.data$PoolQC))  ##has 2909 N.A(ì´ë°ì´í„°ëŠ” 2919ê°œ, ê·¸ì¤‘ 2909ê°œê°€ ê²°ì¸¡ì¹˜)
 
-##poolarea(¸éÀû)°¡ 0ÀÎ °÷Àº ¼ö¿µÀåÀÌ ¾ø´Â °÷, 0º¸´Ù Å©´Ù¸é ¼ö¿µÀåÀÌ ÀÖÀ½!  
+##poolarea(ë©´ì )ê°€ 0ì¸ ê³³ì€ ìˆ˜ì˜ì¥ì´ ì—†ëŠ” ê³³, 0ë³´ë‹¤ í¬ë‹¤ë©´ ìˆ˜ì˜ì¥ì´ ìˆìŒ!  
 
-sum(combined.data$PoolArea>0 & is.na(combined.data$PoolQC)) ## ¼ö¿µÀåÀÌ Á¸ÀçÇÏÁö¸¸ Ç°ÁúÀÌ n/a°ªÀÎ °÷=3°³ 
+sum(combined.data$PoolArea>0 & is.na(combined.data$PoolQC)) ## ìˆ˜ì˜ì¥ì´ ì¡´ì¬í•˜ì§€ë§Œ í’ˆì§ˆì´ n/aê°’ì¸ ê³³=3ê°œ 
 
 ## finding the row with above 
 
 combined.data[(combined.data$PoolArea > 0) & is.na(combined.data$PoolQC),c('PoolQC','PoolArea')]
 ## row 2421, 2504, 2600 have N/A in poolQC which have pool areas 
 
-##pool area Æò±Õ poolqc·Î °áÃøÄ¡ Ã¤¿ì±â 
+##pool area í‰ê·  poolqcë¡œ ê²°ì¸¡ì¹˜ ì±„ìš°ê¸° 
 
-combined.data[,c('PoolQC','PoolArea')] %>%  ##dataÀÇ poolqc, poolarea·Î ¹­À½ 
-  group_by(PoolQC)%>% ##poolQC¸¦ ±âÁØÀ¸·Î 
-  summarise(mean = mean(PoolArea), counts = n())  ## poolareaÀÇ Æò±ÕÀ¸·Î
+combined.data[,c('PoolQC','PoolArea')] %>%  ##dataì˜ poolqc, poolareaë¡œ ë¬¶ìŒ 
+  group_by(PoolQC)%>% ##poolQCë¥¼ ê¸°ì¤€ìœ¼ë¡œ 
+  summarise(mean = mean(PoolArea), counts = n())  ## poolareaì˜ í‰ê· ìœ¼ë¡œ
 
-## ex, fa, gd´Â °¢°¢À¸·Î ³ª´µ¾î µî±Ş Á¤ÇØÁü/ °áÃøÄ¡ Á¸ÀçÇÏ´Â 3°³¸¦ ¾Ë¸Â°Ô Ã¤¿öÁØ´Ù! 
+## ex, fa, gdëŠ” ê°ê°ìœ¼ë¡œ ë‚˜ë‰˜ì–´ ë“±ê¸‰ ì •í•´ì§/ ê²°ì¸¡ì¹˜ ì¡´ì¬í•˜ëŠ” 3ê°œë¥¼ ì•Œë§ê²Œ ì±„ì›Œì¤€ë‹¤! 
 
 combined.data[(combined.data$PoolArea > 0) & is.na(combined.data$PoolQC),c('PoolQC','PoolArea')]
 
-## 2421´Â 368ÀÌ¹Ç·Î ex¿¡ °¡±õ°í, 2504´Â 444ÀÌ¹Ç·Î ex¿¡ °¡±õ´Ù. 2600Àº 561À¸·Î fa¿¡ °¡±î¿ò ³ª¸ÓÁö °áÃøÄ¡´Â noneÀ¸·Î Ã¤¿ò 
+## 2421ëŠ” 368ì´ë¯€ë¡œ exì— ê°€ê¹ê³ , 2504ëŠ” 444ì´ë¯€ë¡œ exì— ê°€ê¹ë‹¤. 2600ì€ 561ìœ¼ë¡œ faì— ê°€ê¹Œì›€ ë‚˜ë¨¸ì§€ ê²°ì¸¡ì¹˜ëŠ” noneìœ¼ë¡œ ì±„ì›€ 
 
 combined.data[2421,'PoolQC'] = 'Ex'
 combined.data[2504,'PoolQC'] = 'Ex'
 combined.data[2600,'PoolQC'] = 'Fa'
 combined.data$PoolQC[is.na(combined.data$PoolQC)] = 'None'
-##È®ÀÎÇÏ±â 
+##í™•ì¸í•˜ê¸° 
 sum(is.na(combined.data$PoolQC))
 sum(is.na(combined.data$PoolArea))
 
 
-##2 garage°ü·Ã n/a°ª Ã³¸® (GarageYrBlt/GarageFinish/GarageQual/GarageCond/GarageType/GarageArea)
+##2 garageê´€ë ¨ n/aê°’ ì²˜ë¦¬ (GarageYrBlt/GarageFinish/GarageQual/GarageCond/GarageType/GarageArea)
 
-## Áı yearbuilt µ¥ÀÌÅÍ = garage built year¿Í µ¿ÀÏÇÒ °Í - garageyrblt Ã³¸® XX -> Ã¢°í°¡ ¾ø´Â °÷ÀÌ¶ó N/A¿´À½ -Ã³¸® 
-length(which(combined.data$GarageYrBlt == combined.data$YearBuilt)) ##2919 obs Áß 2216ÀÌ µ¿ÀÏ
+## ì§‘ yearbuilt ë°ì´í„° = garage built yearì™€ ë™ì¼í•  ê²ƒ - garageyrblt ì²˜ë¦¬ XX -> ì°½ê³ ê°€ ì—†ëŠ” ê³³ì´ë¼ N/Aì˜€ìŒ -ì²˜ë¦¬ 
+length(which(combined.data$GarageYrBlt == combined.data$YearBuilt)) ##2919 obs ì¤‘ 2216ì´ ë™ì¼
 
 na_garageyrblt <- which(is.na(combined.data$GarageYrBlt))
 
 sum(is.na(combined.data$GarageYrBlt)) 
 combined.data[is.na(combined.data$GarageYrBlt)==T,]
 combined.data[na_garageyrblt, 'GarageYrBlt'] <- 0
-##È®ÀÎÇÏ±â 
+##í™•ì¸í•˜ê¸° 
 sum(is.na(combined.data$GarageYrBlt))
 
 ## merginge n/a left garage data 
 garage.cols <- c('GarageArea', 'GarageCars', 'GarageQual', 'GarageFinish', 'GarageCond', 'GarageType')
 
-#garagecondÀÇ °áÃøÄ¡ È®ÀÎ
-combined.data[is.na(combined.data$GarageCond),garage.cols] ##2127¿­¸¸ garage area, garagecar, type Ç¥±â , ±×¿Ü´Â garage°¡ ¾ø´Â°Í 
+#garagecondì˜ ê²°ì¸¡ì¹˜ í™•ì¸
+combined.data[is.na(combined.data$GarageCond),garage.cols] ##2127ì—´ë§Œ garage area, garagecar, type í‘œê¸° , ê·¸ì™¸ëŠ” garageê°€ ì—†ëŠ”ê²ƒ 
 
-##2127¿­°ú ºñ½ÁÇÑ °ª ±¸ÇÏ±â 
+##2127ì—´ê³¼ ë¹„ìŠ·í•œ ê°’ êµ¬í•˜ê¸° 
 a <- which(((combined.data$GarageArea < 370) & (combined.data$GarageArea > 350)) & (combined.data$GarageCars == 1))
 
 sapply(combined.data[a, garage.cols], function(x) sort(table(x))) 
-##garagequal:TA   GarageFinish:Unf GarageCond:TA °¡ ¸¹Àº °ªÀ¸·Î º¸ÀÓ 
+##garagequal:TA   GarageFinish:Unf GarageCond:TA ê°€ ë§ì€ ê°’ìœ¼ë¡œ ë³´ì„ 
 
-## 2127¿­À» Ã¤¿î´Ù! 
+## 2127ì—´ì„ ì±„ìš´ë‹¤! 
 
 combined.data[2127,'GarageQual'] = 'TA'
 combined.data[2127, 'GarageFinish'] = 'Unf'
 combined.data[2127, 'GarageCond'] = 'TA'
 
-##±×¿Ü °ª Ã¤¿ì±â   
-###¼ıÀÚ´Â 0À¸·Î Ã¤¿ì°í, N.A´Â noneÀ¸·Î Ã¤¿ò -> ¿­ÀÌ 0ÀÌ ÀÖÀ¸¸é ±× ¿Ü 0À¸·Î Ã¤¿ì°í, N/A¸é noneÀ¸·Î Ã¤¿ò 
-#####2577Àº N.A ÀÓ -> noneÀ¸·Î Ç¥±â 
+##ê·¸ì™¸ ê°’ ì±„ìš°ê¸°   
+###ìˆ«ìëŠ” 0ìœ¼ë¡œ ì±„ìš°ê³ , N.AëŠ” noneìœ¼ë¡œ ì±„ì›€ -> ì—´ì´ 0ì´ ìˆìœ¼ë©´ ê·¸ ì™¸ 0ìœ¼ë¡œ ì±„ìš°ê³ , N/Aë©´ noneìœ¼ë¡œ ì±„ì›€ 
+#####2577ì€ N.A ì„ -> noneìœ¼ë¡œ í‘œê¸° 
 for (col in garage.cols){
   if (sapply(combined.data[col], is.numeric) == TRUE){
     combined.data[sapply(combined.data[col], is.na), col] = 0
@@ -129,49 +128,49 @@ for (col in garage.cols){
   }
 }
 
-##È®ÀÎ - garage/pool °ü·Ã ¸ğµÎ 0
+##í™•ì¸ - garage/pool ê´€ë ¨ ëª¨ë‘ 0
 sort(colSums(sapply(combined.data[n.a_column], is.na)), decreasing = TRUE)
 
-##3kitchenqual / electrical ¸ğµÎ 1°³ ¾¿ n/a°ªÀÌ ÀÖÀ½ - °¡Àå °¡±î¿î °ª ´ëÃ¼ 
+##3kitchenqual / electrical ëª¨ë‘ 1ê°œ ì”© n/aê°’ì´ ìˆìŒ - ê°€ì¥ ê°€ê¹Œìš´ ê°’ ëŒ€ì²´ 
 
-combined.data[is.na(combined.data$KitchenQual)==T,] ##1556ÇàÀÌ na °ª Á¸Àç  ->ÀÌ¶§ kitchenAbvGrÀÌ 1 
+combined.data[is.na(combined.data$KitchenQual)==T,] ##1556í–‰ì´ na ê°’ ì¡´ì¬  ->ì´ë•Œ kitchenAbvGrì´ 1 
 one<-combined.data[combined.data$KitchenAbvGr==1,c("KitchenQual","KitchenAbvGr")]
 
-table(one)  ## TA°¡ °¡Àå ¸¹±â¿¡ TA·Î ´ëÃ¼ 
+table(one)  ## TAê°€ ê°€ì¥ ë§ê¸°ì— TAë¡œ ëŒ€ì²´ 
 
 combined.data$KitchenQual[is.na(combined.data$KitchenQual)] = 'TA'
 
 
-combined.data[is.na(combined.data$Electrical)==T,] ##1380ÇàÀÌ na / ¿¬°üÀÖ´Â º¯¼ö°¡ ¾ø¾î º¸¿© ÃÖºó°ª ´ëÃ¼ 
+combined.data[is.na(combined.data$Electrical)==T,] ##1380í–‰ì´ na / ì—°ê´€ìˆëŠ” ë³€ìˆ˜ê°€ ì—†ì–´ ë³´ì—¬ ìµœë¹ˆê°’ ëŒ€ì²´ 
 
 str(combined.data$Electrical)
-length(which(combined.data$Electrical=='SBrkr')) ##2919°³ Áß 2671°³°¡ sbrkrÀÌ¹Ç·Î ´ëÃ¼ 
+length(which(combined.data$Electrical=='SBrkr')) ##2919ê°œ ì¤‘ 2671ê°œê°€ sbrkrì´ë¯€ë¡œ ëŒ€ì²´ 
 length(which(combined.data$Electrical=='FuseA'))
 
 combined.data$Electrical[is.na(combined.data$Electrical)] = 'SBrkr'
 
-##È®ÀÎ - electrial/ kitchenqual n/a°ª 0
+##í™•ì¸ - electrial/ kitchenqual n/aê°’ 0
 sort(colSums(sapply(combined.data[n.a_column], is.na)), decreasing = TRUE)
 
-##4 basement °ü·Ã Ç×¸ñ N/A°ª Ã³¸®ÇØº¸ÀÚ! 
+##4 basement ê´€ë ¨ í•­ëª© N/Aê°’ ì²˜ë¦¬í•´ë³´ì! 
 
 bsmt.column<-c('BsmtExposure','BsmtQual', 'BsmtCond', 'BsmtFinType1', 'BsmtFinSF1', 'BsmtFinType2','BsmtFinSF2', 'BsmtUnfSF' ,'TotalBsmtSF', 'BsmtFullBath' ,'BsmtHalfBath')
 
-##bsmtexposure ÀÌ °áÃøÄ¡ÀÎ °Í
+##bsmtexposure ì´ ê²°ì¸¡ì¹˜ì¸ ê²ƒ
 combined.data[is.na(combined.data$BsmtExposure),bsmt.column]
 
 ##949, 1488, 2349 row has N/A but others are filled 
 
 B <- which(((combined.data$BsmtQual =='Gd'& combined.data$BsmtCond=='TA')))
 
-sapply(combined.data[B, bsmt.column], function(x) sort(table(x)))###BsmtExposure ´ëºÎºĞ No 
+sapply(combined.data[B, bsmt.column], function(x) sort(table(x)))###BsmtExposure ëŒ€ë¶€ë¶„ No 
 
 combined.data[c(949, 1488, 2349), 'BsmtExposure'] = 'No' 
 
 
-##±× ¿Ü N/A °ªÀº bsmt°¡ ¾ø´Â °Í 
+##ê·¸ ì™¸ N/A ê°’ì€ bsmtê°€ ì—†ëŠ” ê²ƒ 
 
-###¼ıÀÚÇüº¯¼ö°¡ ÀÖÀ¸¸é, na°ª¿¡ 0 ´ëÀÔ, ±×¿Ü´ÂnoneÀ¸·Î ´ëÀÔ
+###ìˆ«ìí˜•ë³€ìˆ˜ê°€ ìˆìœ¼ë©´, naê°’ì— 0 ëŒ€ì…, ê·¸ì™¸ëŠ”noneìœ¼ë¡œ ëŒ€ì…
 for (col in bsmt.column){
   if (sapply(combined.data[col], is.numeric) == TRUE){
     combined.data[sapply(combined.data[col], is.na),col] = 0
@@ -179,87 +178,87 @@ for (col in bsmt.column){
   else{
     combined.data[sapply(combined.data[col],is.na),col] = 'None'} } ##2121 row has only N.A
 
-##È®ÀÎ - bsmt °ü·Ã Ç×¸ñ n/a°ª 0
+##í™•ì¸ - bsmt ê´€ë ¨ í•­ëª© n/aê°’ 0
 sort(colSums(sapply(combined.data[n.a_column], is.na)), decreasing = TRUE)
 
-##5exterior1st and Exterior2ndÀº n/a°ªÀÌ °¢°¢ ÇÏ³ª¾¿ ÀÖ´Ù. 
+##5exterior1st and Exterior2ndì€ n/aê°’ì´ ê°ê° í•˜ë‚˜ì”© ìˆë‹¤. 
 
 exterior.column<-c('Exterior1st','Exterior2nd')
 
 combined.data[is.na(combined.data$Exterior1st),exterior.column]
-combined.data[is.na(combined.data$Exterior2nd),exterior.column] #2152°¡ µÎ °ª ¸ğµÎ n/a ÀÌ´Ù 
+combined.data[is.na(combined.data$Exterior2nd),exterior.column] #2152ê°€ ë‘ ê°’ ëª¨ë‘ n/a ì´ë‹¤ 
 
 
-##exterior °ü·Ã Ç×¸ñÀÌ ¾øÀ¸¹Ç·Î otherÀ¸·Î Ç¥±â 
+##exterior ê´€ë ¨ í•­ëª©ì´ ì—†ìœ¼ë¯€ë¡œ otherìœ¼ë¡œ í‘œê¸° 
 
 combined.data$Exterior1st[is.na(combined.data$Exterior1st)] = 'Other'
 combined.data$Exterior2nd[is.na(combined.data$Exterior2nd)] = 'Other'
 
 
-##È®ÀÎ - exteiror °ü·Ã Ç×¸ñ n/a°ª 0
+##í™•ì¸ - exteiror ê´€ë ¨ í•­ëª© n/aê°’ 0
 sort(colSums(sapply(combined.data[n.a_column], is.na)), decreasing = TRUE)
 
-#6 SaleType, Functional Utilities Ç×¸ñ N/A Ã³¸® 
-##salestype-salescondition°ú ¿¬°üÁö¾î Ã³¸® 
+#6 SaleType, Functional Utilities í•­ëª© N/A ì²˜ë¦¬ 
+##salestype-salesconditionê³¼ ì—°ê´€ì§€ì–´ ì²˜ë¦¬ 
 
-combined.data[is.na(combined.data$SaleType),'SaleCondition'] ##2490 ÇàÀÌ °áÃøÄ¡ 
+combined.data[is.na(combined.data$SaleType),'SaleCondition'] ##2490 í–‰ì´ ê²°ì¸¡ì¹˜ 
 
-table(combined.data$SaleCondition, combined.data$SaleType) ###Salecondition=normalÀº ´ëºÎºĞ saletype°¡ WD(2314°³)
+table(combined.data$SaleCondition, combined.data$SaleType) ###Salecondition=normalì€ ëŒ€ë¶€ë¶„ saletypeê°€ WD(2314ê°œ)
 
 combined.data$SaleType[is.na(combined.data$SaleType)] = 'WD'
 
-##È®ÀÎ - SaleType °ü·Ã Ç×¸ñ n/a°ª 0
+##í™•ì¸ - SaleType ê´€ë ¨ í•­ëª© n/aê°’ 0
 sort(colSums(sapply(combined.data[n.a_column], is.na)), decreasing = TRUE)
 
-##functional °ü·Ã Ç×¸ñ 2°³ÀÇ °áÃø°ª 
+##functional ê´€ë ¨ í•­ëª© 2ê°œì˜ ê²°ì¸¡ê°’ 
 
-combined.data[is.na(combined.data$Functional),]   ##2217, 2474 ÇàÀÌ °áÃø°ª -°ü·ÃÀÖ´Â Ç×¸ñºÎÀç-ÃÖºó°ª´ëÃ¼ 
+combined.data[is.na(combined.data$Functional),]   ##2217, 2474 í–‰ì´ ê²°ì¸¡ê°’ -ê´€ë ¨ìˆëŠ” í•­ëª©ë¶€ì¬-ìµœë¹ˆê°’ëŒ€ì²´ 
 
 table(combined.data$Functional) 
 combined.data$Functional[is.na(combined.data$Functional)] = 'Typ'
 
 
-##utilities Ç×¸ñ °áÃø°ª 2°³ 
-combined.data[is.na(combined.data$Utilities),] ##1916,1946 Çà °áÃø
-table(combined.data$Utilities)    #1°³»©°í allpubÀ¸·Î, ÃÖºó°ª ´ëÃ¼ 
+##utilities í•­ëª© ê²°ì¸¡ê°’ 2ê°œ 
+combined.data[is.na(combined.data$Utilities),] ##1916,1946 í–‰ ê²°ì¸¡
+table(combined.data$Utilities)    #1ê°œë¹¼ê³  allpubìœ¼ë¡œ, ìµœë¹ˆê°’ ëŒ€ì²´ 
 
-## outlier Ã£±â 
-combined.data[(combined.data$Utilities=='NoSeWa'),] #945Çà 
+## outlier ì°¾ê¸° 
+combined.data[(combined.data$Utilities=='NoSeWa'),] #945í–‰ 
 
 combined.data$Utilities[is.na(combined.data$Utilities)] = 'AllPub'
 combined.data<-combined.data[-945,]
 
-##È®ÀÎ - utilities °ü·Ã Ç×¸ñ n/a°ª 0
+##í™•ì¸ - utilities ê´€ë ¨ í•­ëª© n/aê°’ 0
 sort(colSums(sapply(combined.data[n.a_column], is.na)), decreasing = TRUE)
 
 
 
 
-#7 MasVnrArea,MasVnrType Ã³¸® 
+#7 MasVnrArea,MasVnrType ì²˜ë¦¬ 
 
-## ÇÏ³ª¶óµµ N/A Á¸ÀçÇÏ¸é Ãâ·Â :: n/a¸¸ ÀÖ´Â °ªÀº º®µ¹(?) ¾ø´Â °Í 
-combined.data[is.na(combined.data$MasVnrType) | is.na(combined.data$MasVnrArea),c('MasVnrType','MasVnrArea')] ##2611¸¸ area°ª Á¸Àç 
+## í•˜ë‚˜ë¼ë„ N/A ì¡´ì¬í•˜ë©´ ì¶œë ¥ :: n/aë§Œ ìˆëŠ” ê°’ì€ ë²½ëŒ(?) ì—†ëŠ” ê²ƒ 
+combined.data[is.na(combined.data$MasVnrType) | is.na(combined.data$MasVnrArea),c('MasVnrType','MasVnrArea')] ##2611ë§Œ areaê°’ ì¡´ì¬ 
 
-## N/A °ª¸¸ ÀÖ´Â °÷ Ã³¸® 
+## N/A ê°’ë§Œ ìˆëŠ” ê³³ ì²˜ë¦¬ 
 combined.data$MasVnrType[is.na(combined.data$MasVnrType)] = 'None'
 combined.data$MasVnrArea[is.na(combined.data$MasVnrArea)] = 0
 
-##2611ÇàÃ³¸® -- area¸éÀû¿¡ µû¶ó °áÃøÄ¡ Ã¤¿ì±â! 
+##2611í–‰ì²˜ë¦¬ -- areaë©´ì ì— ë”°ë¼ ê²°ì¸¡ì¹˜ ì±„ìš°ê¸°! 
 c<-na.omit(combined.data[,c('MasVnrType','MasVnrArea')]) 
 
-C <- which((c$MasVnrArea < 206) & (c$MasVnrArea > 190)) ##198°ú °¡±î¿î area³ĞÀÌÀÇ ÃÖºó type Ã£±â 
+C <- which((c$MasVnrArea < 206) & (c$MasVnrArea > 190)) ##198ê³¼ ê°€ê¹Œìš´ areaë„“ì´ì˜ ìµœë¹ˆ type ì°¾ê¸° 
 
-sapply(combined.data[C, ], function(x) sort(table(x))) ##BrkFace°¡ 41·Î ¸¹À½ 
+sapply(combined.data[C, ], function(x) sort(table(x))) ##BrkFaceê°€ 41ë¡œ ë§ìŒ 
 
 combined.data[2611, 'MasVnrType'] = 'BrkFace'
 
 
-##È®ÀÎ - masvnr °ü·Ã Ç×¸ñ n/a°ª 0
+##í™•ì¸ - masvnr ê´€ë ¨ í•­ëª© n/aê°’ 0
 sort(colSums(sapply(combined.data[n.a_column], is.na)), decreasing = TRUE)
 
-#8 LotFrontage: Linear feet of street connected to property °áÃøÄ¡ 
+#8 LotFrontage: Linear feet of street connected to property ê²°ì¸¡ì¹˜ 
 
-##ºñ½ÁÇÑ µ¿³×¿¡ ºñ½ÁÇÑ property°¡ ÀÖÀ» °ÍÀÌ´Ù. µ¿³×¸¦ ¹üÁÖÇüÀÚ·á·Î Ã³¸®! 
+##ë¹„ìŠ·í•œ ë™ë„¤ì— ë¹„ìŠ·í•œ propertyê°€ ìˆì„ ê²ƒì´ë‹¤. ë™ë„¤ë¥¼ ë²”ì£¼í˜•ìë£Œë¡œ ì²˜ë¦¬! 
 
 combined.data['Nbrh.factor'] <- factor(combined.data$Neighborhood, levels = unique(combined.data$Neighborhood))
 
@@ -267,57 +266,57 @@ combined.data$Neighborhood
 
 lot.neighbor <- combined.data[,c('Neighborhood','LotFrontage')] %>%
   group_by(Neighborhood) %>%
-  summarise(median = median(LotFrontage,na.rm = TRUE)) ##na ¹İµå½Ã Á¦°ÅÇÏ¿© Áß°£°ª ±¸ÇÑ´Ù 
+  summarise(median = median(LotFrontage,na.rm = TRUE)) ##na ë°˜ë“œì‹œ ì œê±°í•˜ì—¬ ì¤‘ê°„ê°’ êµ¬í•œë‹¤ 
 
-lot.neighbor ###°¢ µ¿³×ÀÇ lotfrontage Áß¾Ó°ªÀ» ±¸ÇÔ 
+lot.neighbor ###ê° ë™ë„¤ì˜ lotfrontage ì¤‘ì•™ê°’ì„ êµ¬í•¨ 
 
 
-d = which(is.na(combined.data$LotFrontage)) #lotFrontage°¡ NAÀÎ °ªµé¿¡ °üÇØ 
+d = which(is.na(combined.data$LotFrontage)) #lotFrontageê°€ NAì¸ ê°’ë“¤ì— ê´€í•´ 
 
 for (i in d){
-  lot.median <- lot.neighbor[lot.neighbor == combined.data$Neighborhood[i],'median']  ##iÇàÀÇ µ¿³×¿Í °°´Ù¸é, Áß¾Ó°ª Ãâ·Â 
-  combined.data[i,'LotFrontage'] <- lot.median[[1]]}  ##lot.medianÀº °°Àº µ¿³×=Áß¾Ó°ª µ¿ÀÏ, lotgrontage¿¡ Áß¾Ó°ª ³Ö±â  
+  lot.median <- lot.neighbor[lot.neighbor == combined.data$Neighborhood[i],'median']  ##ií–‰ì˜ ë™ë„¤ì™€ ê°™ë‹¤ë©´, ì¤‘ì•™ê°’ ì¶œë ¥ 
+  combined.data[i,'LotFrontage'] <- lot.median[[1]]}  ##lot.medianì€ ê°™ì€ ë™ë„¤=ì¤‘ì•™ê°’ ë™ì¼, lotgrontageì— ì¤‘ì•™ê°’ ë„£ê¸°  
 
-##È®ÀÎ - lotgrontage °ü·Ã Ç×¸ñ n/a°ª 0
+##í™•ì¸ - lotgrontage ê´€ë ¨ í•­ëª© n/aê°’ 0
 sort(colSums(sapply(combined.data[n.a_column], is.na)), decreasing = TRUE)
 
-#9 Fence: Fence quality N/A Ã³¸® -°ü·Ã µ¥ÀÌÅÍ ¾øÀ½ (±×³É fence°¡ ¾ø´Â °ÍÀ¸·Î Ã³¸®)
+#9 Fence: Fence quality N/A ì²˜ë¦¬ -ê´€ë ¨ ë°ì´í„° ì—†ìŒ (ê·¸ëƒ¥ fenceê°€ ì—†ëŠ” ê²ƒìœ¼ë¡œ ì²˜ë¦¬)
 str(combined.data$Fence)
-table(combined.data$Fence) ##¾øÀ½ Ç×¸ñÀÌ ¾ø´Ù! 
+table(combined.data$Fence) ##ì—†ìŒ í•­ëª©ì´ ì—†ë‹¤! 
 
 combined.data$Fence[is.na(combined.data$Fence)] = 'None'
 
 
-##È®ÀÎ - fence °ü·Ã Ç×¸ñ n/a°ª = ¾øÀ½À¸·Î Ã³¸® /data¼³¸í 
+##í™•ì¸ - fence ê´€ë ¨ í•­ëª© n/aê°’ = ì—†ìŒìœ¼ë¡œ ì²˜ë¦¬ /dataì„¤ëª… 
 sort(colSums(sapply(combined.data[n.a_column], is.na)), decreasing = TRUE)
 
-#10 MiscFeature °ü·Ã Ç×¸ñ n/a Ã³¸®/data¼³¸í¿¡ n/a=noneÀÌ¶ó°í ÇÔ  
+#10 MiscFeature ê´€ë ¨ í•­ëª© n/a ì²˜ë¦¬/dataì„¤ëª…ì— n/a=noneì´ë¼ê³  í•¨  
 
 combined.data$MiscFeature[is.na(combined.data$MiscFeature)] = 'None'
 
-##È®ÀÎ - MiscFeature °ü·Ã Ç×¸ñ n/a°ª = ¾øÀ½À¸·Î Ã³¸® /data¼³¸í 
+##í™•ì¸ - MiscFeature ê´€ë ¨ í•­ëª© n/aê°’ = ì—†ìŒìœ¼ë¡œ ì²˜ë¦¬ /dataì„¤ëª… 
 sort(colSums(sapply(combined.data[n.a_column], is.na)), decreasing = TRUE)
 
 
-#11 fireplace °ü·Ã; Fireplaces: Number of fireplaces, FireplaceQu: Fireplace quality -fireplace°¡ ÀÖ¾î¾ß Ç°ÁúÀÌ ÀÖÁö
+#11 fireplace ê´€ë ¨; Fireplaces: Number of fireplaces, FireplaceQu: Fireplace quality -fireplaceê°€ ìˆì–´ì•¼ í’ˆì§ˆì´ ìˆì§€
 
-which((combined.data$Fireplaces > 0) & (is.na(combined.data$FireplaceQu))) ##fireplace°¡ ÀÖ´Âµ¥, qu°¡ naÃ³¸®µÈ °ÍÀº ¾ø´Ù! ¸ğµÎ fireplace°¡ ¾ø´Â°Í 
+which((combined.data$Fireplaces > 0) & (is.na(combined.data$FireplaceQu))) ##fireplaceê°€ ìˆëŠ”ë°, quê°€ naì²˜ë¦¬ëœ ê²ƒì€ ì—†ë‹¤! ëª¨ë‘ fireplaceê°€ ì—†ëŠ”ê²ƒ 
 
 combined.data$FireplaceQu[is.na(combined.data$FireplaceQu)] = 'None'
 
-##È®ÀÎ - FireplaceQu °ü·Ã Ç×¸ñ n/a°ª = ¾øÀ½À¸·Î Ã³¸® /data¼³¸í 
+##í™•ì¸ - FireplaceQu ê´€ë ¨ í•­ëª© n/aê°’ = ì—†ìŒìœ¼ë¡œ ì²˜ë¦¬ /dataì„¤ëª… 
 sort(colSums(sapply(combined.data[n.a_column], is.na)), decreasing = TRUE)
 
 
-#12 Alley °ü·Ã ; data¼³¸í¿¡¼­ N/A´Â alley Á¢±Ù ¾î·Á¿î °÷ÀÌ¶ó°í ÇÔ 
+#12 Alley ê´€ë ¨ ; dataì„¤ëª…ì—ì„œ N/AëŠ” alley ì ‘ê·¼ ì–´ë ¤ìš´ ê³³ì´ë¼ê³  í•¨ 
 
 combined.data$Alley[is.na(combined.data$Alley)] = 'None'
 
-##È®ÀÎ - Alley °ü·Ã Ç×¸ñ n/a°ª = ¾øÀ½À¸·Î Ã³¸® /data¼³¸í 
+##í™•ì¸ - Alley ê´€ë ¨ í•­ëª© n/aê°’ = ì—†ìŒìœ¼ë¡œ ì²˜ë¦¬ /dataì„¤ëª… 
 
 sort(colSums(sapply(combined.data[n.a_column], is.na)), decreasing = TRUE)
 
-###############N/A ÃÖÁ¾ È®ÀÎ 
+###############N/A ìµœì¢… í™•ì¸ 
 sum(is.na(combined.data))
 
 dim(combined.data)
@@ -329,24 +328,24 @@ dim(combined.data)
 
 
 
-##´õ ±ò²ûÇÏ°Ô Á¤¸® 
+##ë” ê¹”ë”í•˜ê²Œ ì •ë¦¬ 
 
 
 
 
-##´õ ±ò²ûÇÏ°Ô Á¤¸® 
+##ë” ê¹”ë”í•˜ê²Œ ì •ë¦¬ 
 
 num_features <- names(which(sapply(combined.data, is.numeric)))
 cat_features <- names(which(sapply(combined.data, is.character)))
 
-numberic.data <- combined.data[num_features]  #¼öÄ¡ÇüÀÚ·á¸¸À» °¡Áö°í ¸¸µç µ¥ÀÌÅÍ 
+numberic.data <- combined.data[num_features]  #ìˆ˜ì¹˜í˜•ìë£Œë§Œì„ ê°€ì§€ê³  ë§Œë“  ë°ì´í„° 
 
 
-#####ÆÑÅÍÈ­ 
+#####íŒ©í„°í™” 
 
 
-##qual ¿­Àº ¸ğµÎ none, po,fa,ta,gd,ex·Î ±¸¼º-> Ä«Å×°í¸®·Î ºĞ·ù 
-# 11.22 poolqc, BsmtCond Ãß°¡
+##qual ì—´ì€ ëª¨ë‘ none, po,fa,ta,gd,exë¡œ êµ¬ì„±-> ì¹´í…Œê³ ë¦¬ë¡œ ë¶„ë¥˜ 
+# 11.22 poolqc, BsmtCond ì¶”ê°€
 qual.cols <- c('ExterQual', 'ExterCond', 'GarageQual', 'GarageCond', 'FireplaceQu', 'KitchenQual', 'HeatingQC', 'BsmtQual', 'BsmtCond','PoolQC')
 
 qual.list <- c('None' = 0, 'Po' = 1, 'Fa' = 2, 'TA' = 3, 'Gd' = 4, 'Ex' = 5)
@@ -356,35 +355,35 @@ map <- function(cols, list, df){
     df[i] <- as.numeric(list[combined.data[,i]])
   }
   return(df)
-}   ##colsÀÇ i ¿¡ µ¥ÀÌÅÍÀÇ i¿­À» ¼öÄ¡Çüº¯¼ö·Î ¸®½ºÆ®ÇÑ df¸¦ ¸¸µé¾î¶ó 
+}   ##colsì˜ i ì— ë°ì´í„°ì˜ iì—´ì„ ìˆ˜ì¹˜í˜•ë³€ìˆ˜ë¡œ ë¦¬ìŠ¤íŠ¸í•œ dfë¥¼ ë§Œë“¤ì–´ë¼ 
 
-numberic.data <- map(qual.cols, qual.list, numberic.data) #°¢°¢´ëÀÀ
+numberic.data <- map(qual.cols, qual.list, numberic.data) #ê°ê°ëŒ€ì‘
 
 
-####Bsmtexposure ÆÑÅÍÈ­ 
+####Bsmtexposure íŒ©í„°í™” 
 table(combined.data$BsmtExposure)
 group.prices('BsmtExposure')
-bsmt.list <- c('None' = 0, 'No' = 1, 'Mn' = 2, 'Av' = 3, 'Gd' = 4)  #bsmtÀÇ °æ¿ì ÀÌ·¸°Ô Á¡¼ö ºÎ¿©
+bsmt.list <- c('None' = 0, 'No' = 1, 'Mn' = 2, 'Av' = 3, 'Gd' = 4)  #bsmtì˜ ê²½ìš° ì´ë ‡ê²Œ ì ìˆ˜ ë¶€ì—¬
 numberic.data <- map(c('BsmtExposure'), bsmt.list, numberic.data)
 
-#####bsmtfintype ÆÑÅÍÈ­ º¯¼ö¼³¸í Âü°í 
+#####bsmtfintype íŒ©í„°í™” ë³€ìˆ˜ì„¤ëª… ì°¸ê³  
 table(combined.data$BsmtFinType1)
 table(combined.data$BsmtFinType2)
 
 bsmt.fin.list <- c('None' = 0, 'Unf' = 1, 'LwQ' = 2,'Rec'= 3, 'BLQ' = 4, 'ALQ' = 5, 'GLQ' = 6)
 numberic.data <- map(c('BsmtFinType1','BsmtFinType2'), bsmt.fin.list, numberic.data)
 
-## functional ÆÑÅÍÈ­ 
+## functional íŒ©í„°í™” 
 
 functional.list <- c('None' = 0, 'Sal' = 1, 'Sev' = 2, 'Maj2' = 3, 'Maj1' = 4, 'Mod' = 5, 'Min2' = 6, 'Min1' = 7, 'Typ'= 8)
 numberic.data <- map('Functional', functional.list, numberic.data)
 
-## garage ÆÑÅÍÈ­ 
+## garage íŒ©í„°í™” 
 table(combined.data$GarageFinish)
 garage.fin.list <- c('None' = 0,'Unf' = 1, 'RFn' = 1, 'Fin' = 2)
 numberic.data <- map('GarageFinish', garage.fin.list, numberic.data)
 
-## fence ÆÑÅÍÈ­
+## fence íŒ©í„°í™”
 table(combined.data$Fence)
 
 fence.list <- c('None' = 0, 'MnWw' = 1, 'GdWo' = 1, 'MnPrv' = 2, 'GdPrv' = 4)
@@ -430,7 +429,7 @@ aggregate(SalePrice~LandSlope, train, mean)
 char.list <- c('Sev' = 3, 'Mod' = 2, 'Gtl' = 1)
 numberic.data <- map('LandSlope', char.list, numberic.data)
 
-## Neighborhood  # °¡°İº°·Î ¾ÆÁÖÁÁÀ½(4) ÁÁÀ½(3) º¸Åë(2) ³ª»İ(1) º°·Î(0)
+## Neighborhood  # ê°€ê²©ë³„ë¡œ ì•„ì£¼ì¢‹ìŒ(4) ì¢‹ìŒ(3) ë³´í†µ(2) ë‚˜ì¨(1) ë³„ë¡œ(0)
 table(combined.data$Neighborhood)
 aggregate(SalePrice~Neighborhood, train, mean)
 char.list <- c('MeadowV' = 0, 'IDOTRR' = 1, 'Sawyer' = 1, 'BrDale' = 1, 'OldTown' = 1, 'Edwards' = 1, 
@@ -458,25 +457,25 @@ aggregate(SalePrice~BldgType, train, mean)
 char.list <- c('1Fam'=5, '2fmCon'=1, 'Duplex'=3,  'Twnhs'=2, 'TwnhsE'=4) 
 numberic.data <- map('BldgType', char.list, numberic.data)
 
-## HouseStyle  # °¡°İº°·Î ³ô->³·(1) 
+## HouseStyle  # ê°€ê²©ë³„ë¡œ ë†’->ë‚®(1) 
 table(combined.data$HouseStyle)
 aggregate(SalePrice~HouseStyle, train, mean)
 char.list <- c('1.5Fin'=2, '1.5Unf'=1, '1Story'=3, '2.5Fin'=4, '2.5Unf'=2, '2Story'=4, 'SFoyer'=1, 'SLvl'=3)
 numberic.data <- map('HouseStyle', char.list, numberic.data)
 
-## RoofStyle  # °¡°İº° 1~3
+## RoofStyle  # ê°€ê²©ë³„ 1~3
 table(combined.data$RoofStyle)
 aggregate(SalePrice~RoofStyle, train, mean)
 char.list <- c('Flat'=3,'Gable'=2, 'Gambrel'=1, 'Hip'=3,  'Mansard'=2, 'Shed'=1)
 numberic.data <- map('RoofStyle', char.list, numberic.data)
 
-## RoofMatl # °¡°İº° 1~4
+## RoofMatl # ê°€ê²©ë³„ 1~4
 table(combined.data$RoofMatl)
 aggregate(SalePrice~RoofMatl, train, mean)
 char.list <- c('ClyTile'=1, 'CompShg'=2, 'Membran'=4, 'Metal'=2, 'Roll'=1, 'Tar&Grv'=3, 'WdShake'=3, 'WdShngl'=4)
 numberic.data <- map('RoofMatl', char.list, numberic.data)
 
-## Exterior1st # °¡°İº° 1~4
+## Exterior1st # ê°€ê²©ë³„ 1~4
 table(combined.data$Exterior1st)
 aggregate(SalePrice~Exterior1st, train, mean)
 char.list <- c('AsbShng'=1, 'AsphShn'=1, 'BrkComm'=2, 'BrkFace'=3,  'CBlock'=4, 'CemntBd'=4,
@@ -499,13 +498,13 @@ aggregate(SalePrice~MasVnrType, train, mean)
 char.list <- c('BrkCmn'=1, 'BrkFace'=2, 'None'=0, 'Stone'=3) 
 numberic.data <- map('MasVnrType', char.list, numberic.data)
 
-## Foundation  # °¡°İº° 1~3
+## Foundation  # ê°€ê²©ë³„ 1~3
 table(combined.data$Foundation)
 aggregate(SalePrice~Foundation, train, mean)
 char.list <- c('BrkTil'=2, 'CBlock'=2, 'PConc'=3, 'Slab'=1,'Stone'=3,'Wood'=1) 
 numberic.data <- map('Foundation', char.list, numberic.data)
 
-## Heating  # °¡°İº° 1~3
+## Heating  # ê°€ê²©ë³„ 1~3
 table(combined.data$Heating)
 aggregate(SalePrice~Heating, train, mean)
 char.list <- c('Floor'=2, 'GasA'=2,  'GasW'=3, 'Grav'=1,'OthW'=3, 'Wall'=1)
@@ -529,12 +528,12 @@ numberic.data <- map('GarageType', char.list, numberic.data)
 head(numberic.data$GarageType)
 sum(is.na(numberic.data$GarageType))
 
-## MiscFeature # °¡°İº° 1~4
+## MiscFeature # ê°€ê²©ë³„ 1~4
 aggregate(SalePrice~MiscFeature, train, mean)
 char.list <- c('None' = 0, 'TenC' = 4, 'Othr' = 1, 'Gar2' = 3, 'Shed' = 2)
 numberic.data <- map('MiscFeature', char.list, numberic.data)
 
-## SaleType # °¡°İº° 1~3
+## SaleType # ê°€ê²©ë³„ 1~3
 table(combined.data$SaleType)
 aggregate(SalePrice~SaleType, train, mean)
 char.list <- c('Con' = 3, 'Oth' = 1, 'ConLw' = 1, 'WD'=2, 'COD'=2,
@@ -542,7 +541,7 @@ char.list <- c('Con' = 3, 'Oth' = 1, 'ConLw' = 1, 'WD'=2, 'COD'=2,
 numberic.data <- map('SaleType', char.list, numberic.data)
 sum(is.na(numberic.data$SaleType))
 
-## SaleCondition  # ´Ù¸¥ »ç¶÷ Âü°í
+## SaleCondition  # ë‹¤ë¥¸ ì‚¬ëŒ ì°¸ê³ 
 aggregate(SalePrice~SaleCondition, train, mean)
 char.list <- c('Abnorml'=1, 'Alloca'=2, 'AdjLand'=3, 'Family'=4, 'Normal'=5, 'Partial'= 0)
 numberic.data <- map('SaleCondition', char.list, numberic.data)
@@ -564,25 +563,25 @@ aggregate(SalePrice~PavedDrive, train, mean)
 char.list <- c('P' = 0, 'N' = 0, 'Y' = 1)
 numberic.data <- map('PavedDrive', char.list, numberic.data)
 
-## MSdwelling ÆÑÅÍÈ­
+## MSdwelling íŒ©í„°í™”
 
-# ¿À·ùÀÇ ÁÖ¹ü (¾Æ·¡)
+# ì˜¤ë¥˜ì˜ ì£¼ë²” (ì•„ë˜)
 numberic.data$MSSubClass <- as.factor(numberic.data$MSSubClass)
 numberic.data$MSSubClass <- revalue(numberic.data$MSSubClass, c('20' = 1, '30' = 0, '40' = 0, 
                                                                 '45' = 0,'50' = 0, '60' = 1, '70' = 0, '75' = 0, '80' = 0, '85' = 0, '90' = 0, 
                                                                 '120' = 1, '150' = 0, '160' = 0, '180' = 0, '190' = 0))
 numberic.data$MSSubClass <- as.numeric(gsub("2","0",numberic.data$MSSubClass))
-numberic.data$MSSubClass <- as.numeric(numberic.data$MSSubClass)  # 1 ¾Æ´Ï¸é 2·Î ¹Ù²ñ
+numberic.data$MSSubClass <- as.numeric(numberic.data$MSSubClass)  # 1 ì•„ë‹ˆë©´ 2ë¡œ ë°”ë€œ
 sum(is.na(numberic.data$MSSubClass))
 
 #### CHECK
 
-dim(numberic.data)  # 2918 79 util »©¸é 78
+dim(numberic.data)  # 2918 79 util ë¹¼ë©´ 78
 
 
-##µ¥ÀÌÅÍ ÇÕÄ¡±â/Ã³À½¿¡ rbind·Î trainºÎÅÍ Çß±â¶§¹®¿¡ ÀÌ·¸°Ô »Ì¾Æ³»±â °¡´É 
+##ë°ì´í„° í•©ì¹˜ê¸°/ì²˜ìŒì— rbindë¡œ trainë¶€í„° í–ˆê¸°ë•Œë¬¸ì— ì´ë ‡ê²Œ ë½‘ì•„ë‚´ê¸° ê°€ëŠ¥ 
 
-##training data ÃßÃâ
+##training data ì¶”ì¶œ
 train.data <- cbind(numberic.data[1:1460,], train['SalePrice'])   
 head(train.data)  
 
@@ -627,7 +626,7 @@ for(x in names(skewed_feats)) {
 }
 
 
-# ÀÌ°Í ¶§¹®ÀÎ°¡? categori ¿¡·¯
+# ì´ê²ƒ ë•Œë¬¸ì¸ê°€? categori ì—ëŸ¬
 col.drops <- c('Utilities')
 character.data <- character.data[,!names(numberic.data) %in% c('Utilities')]
 
@@ -641,11 +640,11 @@ dim(all_data)
 X_train <- all_data[1:nrow(train),]
 X_test <- all_data[(nrow(train)):nrow(all_data),]
 #train)+1??
-y <- train$SalePrice  #y´Â columnÀÌ ¾Æ´Ï¶ó ¼ıÀÚ¿©¾ßÇÔ
+y <- train$SalePrice  #yëŠ” columnì´ ì•„ë‹ˆë¼ ìˆ«ìì—¬ì•¼í•¨
 
 X_train$SalePrice<-y
 
-################################################ÀüÃ³¸®¿Ï·á 
+################################################ì „ì²˜ë¦¬ì™„ë£Œ 
 
 #####jaeyoung modeling#####
 
@@ -663,7 +662,7 @@ set.seed(12)
 b2<-step(a,direction='both')
 summary(b2)
 
-##########rmse ±¸ÇÏ±â 
+##########rmse êµ¬í•˜ê¸° 
 install.packages('Metrics')
 library(Metrics)
 
@@ -675,7 +674,7 @@ rmse(obs, both)
 
 
 
-#########´ÙÁß°ø¼±¼º È®ÀÎ 
+#########ë‹¤ì¤‘ê³µì„ ì„± í™•ì¸ 
 
 library('car')
 
@@ -685,7 +684,7 @@ fit<-lm(SalePrice~.,data=X_train)
 summary(fit)
 
 ########################
-# 2018. 11. 23 Yonghee Ãß°¡
+# 2018. 11. 23 Yonghee ì¶”ê°€
 ########################
 #Before we get into building models, we will holdout the data from train set with sale price to be able to compare observed
 #values with predictions. 
@@ -720,7 +719,7 @@ aaa_log <- log2(aaa+1 )
 aaa_log.obj <- prcomp(aaa_log,scale=TRUE)
 plot(aaa_log.obj$x[,1], aaa_log.obj$x[,2]) 
 
-### Biplot: °¢ °³Ã¼¿¡ ´ëÇÑ Ã¹ ¹øÂ°, µÎ ¹øÂ° ÁÖ¼ººĞ Á¡¼ö ¹× Çà·Äµµ(biplot) 
+### Biplot: ê° ê°œì²´ì— ëŒ€í•œ ì²« ë²ˆì§¸, ë‘ ë²ˆì§¸ ì£¼ì„±ë¶„ ì ìˆ˜ ë° í–‰ë ¬ë„(biplot) 
 biplot(aaa_log.obj, main="Biplot")
 
 #SCREEPLOT 
@@ -750,7 +749,7 @@ summary(l.model)
 
 ##rmse
 
-# ¼öÁ¤3
+# ìˆ˜ì •3
 sqrt(mean(l.model$residuals^2))
 
 
@@ -761,23 +760,23 @@ sqrt(mean(l.model$residuals^2))
 
 ##### Pre-processing
 
-# ÀüÃ³¸® ´Ù½Ã
+# ì „ì²˜ë¦¬ ë‹¤ì‹œ
 X_train <- all_data[1:nrow(train),]
 X_test <- all_data[(nrow(train)+1):nrow(all_data),]
-train$SalePrice <- log(train$SalePrice + 1)  # Áß¿ä
+train$SalePrice <- log(train$SalePrice + 1)  # ì¤‘ìš”
 y <- train$SalePrice
 
-# caret ÆĞÅ°Áö¸¦ ÀÌ¿ëÇÑ model training parameters ¼³Á¤ÇÏ±â
+# caret íŒ¨í‚¤ì§€ë¥¼ ì´ìš©í•œ model training parameters ì„¤ì •í•˜ê¸°
 tcr <- trainControl(method="repeatedcv",
                                  number=5,
                                  repeats=5,
                                  verboseIter=FALSE)
 
-# µ¥ÀÌÅÍÀÇ ±¸Á¶¸¦ È®ÀÎ, ¹®ÀÚÇü µé¾î°¡¸é ¿À·ù³²
-str(all_data)  # ´Ù num ¾Æ´Ï¸é int
+# ë°ì´í„°ì˜ êµ¬ì¡°ë¥¼ í™•ì¸, ë¬¸ìí˜• ë“¤ì–´ê°€ë©´ ì˜¤ë¥˜ë‚¨
+str(all_data)  # ë‹¤ num ì•„ë‹ˆë©´ int
 
-#### Ridge È¸±Í ¸ğµ¨
-# alpha°¡ 0ÀÏ ¶§, Ridge regression
+#### Ridge íšŒê·€ ëª¨ë¸
+# alphaê°€ 0ì¼ ë•Œ, Ridge regression
 
 lambdas <- seq(1,0,-0.001)
 
@@ -793,9 +792,9 @@ model_ridge <- train(x=X_train, y=y,
                                           lambda=lambdas))
 
 
-## RMSE ½Ã°¢È­
-## RMSE: Æò±Õ Á¦°ö±Ù ¿ÀÂ÷(Root Mean Square Error; RMSE), Á¤¹Ğµµ
-# ¿ÖÀÌ·¸°Ô ¿À¶ô°¡¶ôÇÔ???
+## RMSE ì‹œê°í™”
+## RMSE: í‰ê·  ì œê³±ê·¼ ì˜¤ì°¨(Root Mean Square Error; RMSE), ì •ë°€ë„
+# ì™œì´ë ‡ê²Œ ì˜¤ë½ê°€ë½í•¨???
 ggplot(data=filter(model_ridge$result,RMSE<1)) +
   geom_line(aes(x=lambda,y=RMSE))
 y <- train$SalePrice
@@ -804,7 +803,7 @@ mean(model_ridge$resample$RMSE)  #0.3051705
 mean(model_ridge$resample$Rsquared) #0.4179864
 summary(model_ridge$resample)
 
-## ¿µÇâ ¹ÌÄ£ º¯¼ö¸¦ ¾Ë°í ½ÍÀ» ¶§
+## ì˜í–¥ ë¯¸ì¹œ ë³€ìˆ˜ë¥¼ ì•Œê³  ì‹¶ì„ ë•Œ
 # extract coefficients for the best performing model
 coef <- data.frame(coef.name = dimnames(coef(model_ridge$finalModel,s=model_ridge$bestTune$lambda))[[1]], 
                    coef.value = matrix(coef(model_ridge$finalModel,s=model_ridge$bestTune$lambda)))
@@ -826,8 +825,8 @@ ggplot(imp_coef) +
   theme(axis.title=element_blank())
 
 
-#### Lasso È¸±Í ¸ğµ¨
-# alpha°¡ 1ÀÏ ¶§, Lasso regression
+#### Lasso íšŒê·€ ëª¨ë¸
+# alphaê°€ 1ì¼ ë•Œ, Lasso regression
 
 # train model
 set.seed(123)  # for reproducibility
@@ -841,7 +840,7 @@ model_lasso <- train(x=X_train,y=y,
                                           lambda=c(1,0.1,0.05,0.01,seq(0.009,0.001,-0.001),
                                                    0.00075,0.0005,0.0001)))
 
-## RMSE ½Ã°¢È­
+## RMSE ì‹œê°í™”
 ggplot(data=filter(model_lasso$result,RMSE<1)) +
   geom_line(aes(x=lambda,y=RMSE))
 y <- train$SalePrice
@@ -849,7 +848,7 @@ y <- train$SalePrice
 mean(model_lasso$resample$RMSE) #0.3052747
 mean(model_lasso$resample$Rsquared) # 0.4174849
 
-## ¿µÇâ ¹ÌÄ£ º¯¼ö¸¦ ¾Ë°í ½ÍÀ» ¶§
+## ì˜í–¥ ë¯¸ì¹œ ë³€ìˆ˜ë¥¼ ì•Œê³  ì‹¶ì„ ë•Œ
 coef <- data.frame(coef.name = dimnames(coef(model_lasso$finalModel,s=model_lasso$bestTune$lambda))[[1]], 
                    coef.value = matrix(coef(model_lasso$finalModel,s=model_lasso$bestTune$lambda)))
 coef <- coef[-1,]
@@ -868,7 +867,7 @@ ggplot(imp_coef) +
   ggtitle("Coefficents in the Lasso Model") +
   theme(axis.title=element_blank())
 
-## id Ãß°¡
+## id ì¶”ê°€
 ID<-data.frame(test$Id)
 testdata<-cbind(ID,X_test)
 #?????????????
@@ -893,7 +892,7 @@ corrplot(as.matrix(correlations[corr.idx,corr.idx]), type = 'upper', method='col
 
 ########################
 
-##id Ãß°¡ 
+##id ì¶”ê°€ 
 
 ID<-data.frame(test$Id)
 
